@@ -1,4 +1,3 @@
-
 #  Copyright (c) 2019.
 #  Author UD@DarwinSubramaniam
 #
@@ -19,10 +18,13 @@
 import os
 from PIL import Image
 import src.RGBARules as rgbManager
+
 import src.FolderRules as folderManager
 
 
 class ImageColorManipulator:
+    DevMode = True
+    pic_format = ('png', 'jpg', 'jpeg')
 
     def __init__(self, original_image_folder_path=r'C:\Users\63641\Box Sync\Work\Software Development '
                                                   r'Team\GoodToBad\resources\GoodImages',
@@ -47,30 +49,54 @@ class ImageColorManipulator:
             self.output_image_folder_path = output_image_folder_path
 
     def run(self):
-        list_of_images = self.find_all_images_in_folder(self.original_image_folder_path)
+        list_of_images = self._find_all_images_in_folder(self.original_image_folder_path)
         for image_path in list_of_images:
+            # 1. open the image -> loaded to the RAM
             image = Image.open(image_path)
+
+            # 2. color of component
             searching_for_rgb = {'red': 252, 'green': 138, 'blue': 68}
+
             rgb_rules = rgbManager.RGBARules(r_value=searching_for_rgb['red'], low_range_r=4, high_range_r=3,
                                              g_value=searching_for_rgb['green'], low_range_g=20, high_range_g=20,
                                              b_value=searching_for_rgb['blue'], low_range_b=80, high_range_b=50)
 
+            image_size = image.size
+            image_height = image_size[1]
+            image_width = image_size[0]
+
+            shape_pixels: list = []
+
+            for height in range(image_height):
+                for width in range(image_width):
+                    lookup_pixel_point = (width, height)
+                    rgb_at_lookup_pixel = image.getpixel(lookup_pixel_point)
+                    is_accept_pixel_of_shape = rgb_rules.is_pixel_within_rgb_range(rgb_at_lookup_pixel)
+                    if is_accept_pixel_of_shape:
+
+                        if self.DevMode:
+                            print()
+                            print("Adding Pixel : " + str(lookup_pixel_point))
+                            print()
+                            print("RGB value at this pixel is ->  R :" + rgb_at_lookup_pixel[0] +
+                                  " G : " + rgb_at_lookup_pixel[1] +
+                                  " B : " + rgb_at_lookup_pixel[2])
+                            print()
+
+                        shape_pixels.append(lookup_pixel_point)
 
 
-    def find_pixel_color(self, image_path) -> list:
-        image = Image.open(image_path)
-        pix = image.load()
-        print("Image Size : " + str(image.size))
-        pixel_point = (120, 180)
-        print(image.getpixel(pixel_point))
 
-    def find_all_images_in_folder(self, folder_path: str) -> list:
+    def _find_all_images_in_folder(self, folder_path: str) -> list:
         list_of_images: list = []
         for each_file in os.listdir(folder_path):
             file_extension = each_file.split('.')[1]
-            if file_extension in 'png' or 'jpeg' or 'jpg':
+            if file_extension in self.pic_format:
                 print(each_file + " is a picture format")
                 list_of_images.append(os.path.join(folder_path, each_file))
+
+    def add_new_format(self, format_name):
+        self.pic_format = self.pic_format.__add__(format_name)
 
     def set_color(self, rgb_value):
         pass

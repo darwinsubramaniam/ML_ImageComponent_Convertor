@@ -37,7 +37,7 @@ class RGBARules:
         self.max_b = b_value + high_range_b
         self.display_rule()
 
-    def is_red_value_within_range(self, r_value):
+    def _is_red_value_within_range(self, r_value):
         if r_value <= self.high_range_r:
             if r_value >= self.low_range_r:
                 return True
@@ -46,7 +46,7 @@ class RGBARules:
         else:
             return False
 
-    def is_green_value_within_range(self, g_value):
+    def _is_green_value_within_range(self, g_value):
         if g_value <= self.high_range_g:
             if g_value >= self.low_range_g:
                 return True
@@ -55,7 +55,7 @@ class RGBARules:
         else:
             return False
 
-    def is_blue_value_within_range(self, b_value):
+    def _is_blue_value_within_range(self, b_value):
         if b_value <= self.high_range_b:
             if b_value >= self.low_range_b:
                 return True
@@ -63,6 +63,19 @@ class RGBARules:
                 return True
         else:
             return False
+
+    def is_pixel_within_rgb_range(self,rgb_value:list)->bool:
+        red = rgb_value[0]
+        green = rgb_value[1]
+        blue = rgb_value[3]
+        if (self._is_red_value_within_range(red)
+                and self._is_green_value_within_range(green)
+                and self._is_blue_value_within_range(blue)):
+            return True
+        else:
+            return False
+
+
 
     def display_rule(self):
         print()

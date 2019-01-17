@@ -32,7 +32,7 @@ class ImageColorManipulator:
     pic_format = ('png', 'jpg', 'jpeg')
 
     def __init__(self, original_image_folder_path='./resources/dev_resources/good_images',
-                 output_image_folder_path= '/resources/Output/dev_output/good_images',
+                 output_image_folder_path= './resources/Output/dev_output/good_images',
                  list_of_rgba_color_monitor: list = []):
         self.list_of_rgba_color_monitor: list = list_of_rgba_color_monitor
         if os.path.exists(original_image_folder_path):

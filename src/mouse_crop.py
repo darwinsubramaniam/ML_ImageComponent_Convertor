@@ -17,7 +17,7 @@ def displayImage(screen, px, topleft, prior):
         y += height
         height = abs(height)
 
-    # eliminate redundant drawing cycles (when mouse isn't moving)
+    # eliminate redundant drawing cycles (when mouse isn'dev_output moving)
     current = x, y, width, height
     if not (width and height):
         return current

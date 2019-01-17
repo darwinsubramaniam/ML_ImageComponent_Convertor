@@ -16,20 +16,26 @@
 # SOFTWARE.
 
 import os
-from PIL import Image
+import sys
+import time
+
+from PIL import Image, ImageDraw
 import src.RGBARules as rgbManager
 
 import src.FolderRules as folderManager
+from src.Neighboring_Pixel_Method import NeighboringPixelValidationMethod
 
 
 class ImageColorManipulator:
     DevMode = True
+    Display_All_Print_Out = False
     pic_format = ('png', 'jpg', 'jpeg')
 
     def __init__(self, original_image_folder_path=r'C:\Users\63641\Box Sync\Work\Software Development '
-                                                  r'Team\GoodToBad\resources\GoodImages',
+                                                  r'Team\GoodToBad\resources\dev_resources\good_images',
                  output_image_folder_path=r'C:\Users\63641\Box Sync\Work\Software Development '
-                                          r'Team\GoodToBad\resources\Output', list_of_rgba_color_monitor: list = []):
+                                          r'Team\GoodToBad\resources\Output\dev_output\good_images',
+                 list_of_rgba_color_monitor: list = []):
         self.list_of_rgba_color_monitor: list = list_of_rgba_color_monitor
         if os.path.exists(original_image_folder_path):
             if os.path.isdir(original_image_folder_path):
@@ -39,11 +45,12 @@ class ImageColorManipulator:
                 print("Image Folder path : " + original_image_folder_path + " is not a folder.")
                 exit(0)
         else:
-            print("Given image folder path : " + original_image_folder_path + " - X doesn't exist.")
+            print("Given image folder path : " + original_image_folder_path + " - X doesn'dev_output exist.")
             exit(0)
 
         if os.path.exists(output_image_folder_path) and len(os.listdir(output_image_folder_path)) > 0:
             print("The Output Folder is not empty -> please rename or delete the folder : " + output_image_folder_path)
+            exit(0)
         else:
             os.mkdir(output_image_folder_path)
             self.output_image_folder_path = output_image_folder_path
@@ -53,19 +60,24 @@ class ImageColorManipulator:
         for image_path in list_of_images:
             # 1. open the image -> loaded to the RAM
             image = Image.open(image_path)
+            if self.DevMode:
+                print('Working on picture : ' + str(image_path))
+                time.sleep(0.5)
+
+            image_name = image_path.split("\\").pop().split(".")[0]
 
             # 2. color of component
-            searching_for_rgb = {'red': 252, 'green': 138, 'blue': 68}
+            searching_for_rgb = {'red': 252, 'green': 108, 'blue': 60}
 
-            rgb_rules = rgbManager.RGBARules(r_value=searching_for_rgb['red'], low_range_r=4, high_range_r=3,
-                                             g_value=searching_for_rgb['green'], low_range_g=20, high_range_g=20,
-                                             b_value=searching_for_rgb['blue'], low_range_b=80, high_range_b=50)
+            rgb_rules = rgbManager.RGBARules(r_value=searching_for_rgb['red'], low_range_r=38, high_range_r=3,
+                                             g_value=searching_for_rgb['green'], low_range_g=22, high_range_g=61,
+                                             b_value=searching_for_rgb['blue'], low_range_b=5, high_range_b=31)
 
             image_size = image.size
             image_height = image_size[1]
             image_width = image_size[0]
 
-            shape_pixels: list = []
+            pixels_with_accepted_color_range: list = []
 
             for height in range(image_height):
                 for width in range(image_width):
@@ -78,14 +90,35 @@ class ImageColorManipulator:
                             print()
                             print("Adding Pixel : " + str(lookup_pixel_point))
                             print()
-                            print("RGB value at this pixel is ->  R :" + rgb_at_lookup_pixel[0] +
-                                  " G : " + rgb_at_lookup_pixel[1] +
-                                  " B : " + rgb_at_lookup_pixel[2])
+                            print("RGB value at this pixel is ->  R :" + str(rgb_at_lookup_pixel[0]) +
+                                  " G : " + str(rgb_at_lookup_pixel[1]) +
+                                  " B : " + str(rgb_at_lookup_pixel[2]))
                             print()
 
-                        shape_pixels.append(lookup_pixel_point)
+                        pixels_with_accepted_color_range.append(lookup_pixel_point)
 
+                    else:
+                        if self.DevMode and self.Display_All_Print_Out:
+                            print()
+                            print('_____________________________________________________')
+                            print('Pixel : ' + str(lookup_pixel_point) + " is not within the range "
+                                                                         "of acceptance pixel color.")
+                            print("RGB value at this pixel is ->  R :" + str(rgb_at_lookup_pixel[0]) +
+                                  " G : " + str(rgb_at_lookup_pixel[1]) +
+                                  " B : " + str(rgb_at_lookup_pixel[2]))
+                            print()
+                            print('______________________________________________________')
 
+            draw = ImageDraw.Draw(image)
+            count = 0
+            data_clean_up_list = NeighboringPixelValidationMethod(pixels_with_accepted_color_range).clean_up_pixel_list
+            #data_clean_up_list_second = NeighboringPixelValidationMethod(pixels_with_accepted_color_range).clean_up_pixel_list
+
+            for each_pixel in data_clean_up_list:
+                count += 1
+                draw.point(xy=each_pixel.pixel_location, fill=(255, 0, 0))
+            fp = os.path.join(self.output_image_folder_path, image_name+"_"+str(count) + ".png")
+            image.save(fp)
 
     def _find_all_images_in_folder(self, folder_path: str) -> list:
         list_of_images: list = []
@@ -95,8 +128,13 @@ class ImageColorManipulator:
                 print(each_file + " is a picture format")
                 list_of_images.append(os.path.join(folder_path, each_file))
 
+        return list_of_images
+
     def add_new_format(self, format_name):
         self.pic_format = self.pic_format.__add__(format_name)
+
+    def clean_up_pixel(self,list_of_pixels):
+        pass
 
     def set_color(self, rgb_value):
         pass

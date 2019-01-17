@@ -14,6 +14,8 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import time
+
 
 class RGBARules:
     def __init__(self, r_value: int, low_range_r: int,
@@ -38,36 +40,36 @@ class RGBARules:
         self.display_rule()
 
     def _is_red_value_within_range(self, r_value):
-        if r_value <= self.high_range_r:
-            if r_value >= self.low_range_r:
+        if r_value <= self.max_r:
+            if r_value >= self.min_r:
                 return True
             else:
-                return True
+                return False
         else:
             return False
 
     def _is_green_value_within_range(self, g_value):
-        if g_value <= self.high_range_g:
-            if g_value >= self.low_range_g:
+        if g_value <= self.max_g:
+            if g_value >= self.min_g:
                 return True
             else:
-                return True
+                return False
         else:
             return False
 
     def _is_blue_value_within_range(self, b_value):
-        if b_value <= self.high_range_b:
-            if b_value >= self.low_range_b:
+        if b_value <= self.max_b:
+            if b_value >= self.min_b:
                 return True
             else:
-                return True
+                return False
         else:
             return False
 
-    def is_pixel_within_rgb_range(self,rgb_value:list)->bool:
+    def is_pixel_within_rgb_range(self, rgb_value:list)->bool:
         red = rgb_value[0]
         green = rgb_value[1]
-        blue = rgb_value[3]
+        blue = rgb_value[2]
         if (self._is_red_value_within_range(red)
                 and self._is_green_value_within_range(green)
                 and self._is_blue_value_within_range(blue)):

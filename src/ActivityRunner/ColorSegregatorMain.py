@@ -31,10 +31,10 @@ if __name__ == '__main__':
     orange_range = rgbManager.RGBARules(r_value=252, low_range_r=38, high_range_r=3,
                                         g_value=108, low_range_g=22, high_range_g=61,
                                         b_value=60, low_range_b=5, high_range_b=31)
-    location_tantalum_path = r'C:\Users\63641\Box Sync\AOI Images\Images\20190114\Location_Segregated_Tantalum'
+    location_tantalum_path = '/home/ztester/Darwin/AOI Data/Project_Image_Bad_Faking/Location_Segregated_Tantalum'
 
-    output_color_tantalum_path = r'C:\Users\63641\Box Sync\AOI ' \
-                                 r'Images\Images\20190114\Location_Color_Segregated_Tantalum'
+    output_color_tantalum_path = '/home/ztester/Darwin/AOI ' \
+                                 'Data/Project_Image_Bad_Faking/Location_Color_Segregated_Tantalum '
 
     color_segregation = colorsegregator.ImageColorBasedSegregation(rgb_rules=orange_range,
                                                                    color_name="Orange",

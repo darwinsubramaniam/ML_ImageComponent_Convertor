@@ -27,7 +27,7 @@ class ImageColorBasedSegregation:
                  output_image_path: str,
                  percentage=25,
                  negative_category_name: str = "Unknown",
-                 dev_mode: bool = True,split_regex="/"):
+                 dev_mode: bool = True, split_regex="/"):
         self.class_name = "Image Color Based Segregation for " + color_name
         self.image_path = ""
         self.split_regex = split_regex

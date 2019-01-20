@@ -34,7 +34,7 @@ if __name__ == '__main__':
     location_tantalum_path = '/home/ztester/Darwin/AOI Data/Project_Image_Bad_Faking/Location_Segregated_Tantalum'
 
     output_color_tantalum_path = '/home/ztester/Darwin/AOI ' \
-                                 'Data/Project_Image_Bad_Faking/Location_Color_Segregated_Tantalum '
+                                 'Data/Project_Image_Bad_Faking/Location_Color_Segregated_Tantalum'
 
     color_segregation = colorsegregator.ImageColorBasedSegregation(rgb_rules=orange_range,
                                                                    color_name="Orange",

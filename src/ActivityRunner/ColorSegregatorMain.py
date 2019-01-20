@@ -41,7 +41,7 @@ if __name__ == '__main__':
                                                                    output_image_path=output_color_tantalum_path,
                                                                    percentage=20,
                                                                    negative_category_name="Black",
-                                                                   split_regex='\\')
+                                                                   split_regex='/')
 
     list_dir_with_location = os.listdir(location_tantalum_path)
     for each_location_dir in list_dir_with_location:

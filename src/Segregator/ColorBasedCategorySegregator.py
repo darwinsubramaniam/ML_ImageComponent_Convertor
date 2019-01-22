@@ -27,7 +27,7 @@ class ImageColorBasedSegregation:
                  output_image_path: str,
                  percentage=25,
                  negative_category_name: str = "Unknown",
-                 dev_mode: bool = True,split_regex="/"):
+                 dev_mode: bool = False, split_regex="/"):
         self.class_name = "Image Color Based Segregation for " + color_name
         self.image_path = ""
         self.split_regex = split_regex
@@ -103,21 +103,19 @@ class ImageColorBasedSegregation:
                         print('________________________________________________________________________')
 
         category_confident = (len(list_of_pixel_with_obey_rgb_rules) / total_pixel) * 100
-        if self.dev_mode:
-            print()
-            print('________________ Picture Category Log ' + self.class_name + '_________________________________')
-            print("Picture " + image_name +
-                  " has category confident level : " +
-                  str(category_confident) + "for color " +
-                  self.get_color_name())
-            print('__________________________________________________________________________________________')
+        print()
+        print('________________ Picture Category Log ' + self.class_name + '_________________________________')
+        print("Picture " + image_name +
+              " has category confident level : " +
+              str(category_confident) + "for color " +
+              self.get_color_name())
+        print('__________________________________________________________________________________________')
 
         if category_confident >= self.percentage:
             self._save_image(self.color, image_name_plus_ext)
             return self.color
         else:
             print()
-
             print('________________ Picture Category Log ' + self.class_name + '_________________________________')
             print("Picture : " +
                   image_name +
@@ -129,8 +127,7 @@ class ImageColorBasedSegregation:
 
     def _save_image(self, category, save_as: str):
         image = Image.open(self.image_path)
-        if self.dev_mode:
-            print("Image saved as : " + save_as)
+        print("Image saved as : " + save_as)
         category_output_path = os.path.join(self.output_path, category)
         if not os.path.exists(category_output_path):
             os.mkdir(category_output_path)
